@@ -1,7 +1,9 @@
 import { defineConfig } from "vite"
 
 export default defineConfig({
-    base: process.env.NODE_ENV === "production"
-        ? "/cyberpunk-security-portfolio/"
-        : "/"
+    base: "/cyberpunk-security-portfolio/",
+    build: {
+        outDir: "docs",
+        emptyOutDir: true
+    }
 })

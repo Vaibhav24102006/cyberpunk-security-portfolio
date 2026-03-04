@@ -66,6 +66,33 @@ h1 {
     text-transform: uppercase;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
     letter-spacing: 0.1em;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 4px solid var(--neon-cyan);
+    width: 0;
+    animation: typing 2.5s steps(20, end) forwards, blink 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0
+    }
+
+    to {
+        width: 100%
+    }
+}
+
+@keyframes blink {
+
+    from,
+    to {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: var(--neon-cyan)
+    }
 }
 
 h2 {
@@ -154,6 +181,7 @@ h2 {
 @media (max-width: 768px) {
     h1 {
         font-size: 3rem;
+        border-right: 2px solid var(--neon-cyan);
     }
 
     h2 {
@@ -166,5 +194,26 @@ h2 {
 
     .glass-container {
         padding: 1.5rem;
+        margin: 0 1rem;
+    }
+
+    .glass-container p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .skill-list li {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .neon-btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.8rem;
     }
 }

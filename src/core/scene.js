@@ -6,7 +6,7 @@ import { BloomEffect } from 'postprocessing';
 
 // 1. Scene
 export const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x0a0a1a, 0.03);
+scene.fog = new THREE.FogExp2(0x080820, 0.015);
 
 // 2. Camera
 export const camera = new THREE.PerspectiveCamera(
@@ -24,8 +24,12 @@ export const renderer = new THREE.WebGLRenderer({
     alpha: false,
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize pixel ratio
-renderer.setClearColor(0x0a0a1a);
+
+// Dynamic Pixel Ratio to save massive fragment overhead on mobile
+const isMobile = window.innerWidth < 800;
+const maxPixelRatio = isMobile ? 1 : 2;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
+renderer.setClearColor(0x080820);
 
 // 4. Post-processing (Bloom)
 export const composer = new EffectComposer(renderer);

@@ -3,7 +3,6 @@
     "homepage": "https://Vaibhav24102006.github.io/cyberpunk-security-portfolio",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview"
   }
 }

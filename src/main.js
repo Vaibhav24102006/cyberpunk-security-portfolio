@@ -1,8 +1,8 @@
-import { scene, camera, renderer, composer, resize } from './scene.js';
-import { setupWorld, updateWorld } from './world.js';
-import { setupParticles, updateParticles } from './particles.js';
-import { setupScroll } from './scroll.js';
-import { startEngine } from './engine.js';
+import { scene, camera, renderer, composer, resize } from './core/scene.js';
+import { setupWorld, updateWorld } from './world/world.js';
+import { setupParticles, updateParticles } from './world/particles.js';
+import { setupScroll } from './interaction/scroll.js';
+import { startEngine } from './core/engine.js';
 
 // Setup everything
 setupWorld(scene);

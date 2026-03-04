@@ -1,78 +1,37 @@
-# Cyberpunk Portfolio Website — Implementation Plan
+# Cyberpunk Perspective Narrative Update Plan
 
-A Three.js + GSAP + Vite portfolio site with a **"Cyberpunk Security Lab"** theme for a cybersecurity / AI security / web dev professional.
+## 1. Scene Layout & World Zones (`zones.js` & `world.js`)
+We will remap the world along the Z-axis with 12 unit intervals:
+- **Hero / Boot Sequence**: `z = 0` (Central glowing core + Torus hex ring + point light)
+- **About / Identity Scan**: `z = -12` (Network nodes: 5-8 spheres connected by thin glowing lines)
+- **Projects / Threat Analysis**: `z = -24` (Holographic database: 6 cylinder pillars forming an avenue)
+- **Skills / Capability Matrix**: `z = -36` (Orbiting skill system: Central core + 6 orbiting technology nodes)
+- **Contact / Secure Channel**: `z = -48` (Portal: Emissive blue Torus + particle spiral pulling inward)
 
-## Proposed Changes
+## 2. Camera Motion (`scroll.js`)
+- Implement lateral drift logic during scroll:
+  - `x = Math.sin(scrollProgress * Math.PI * 2) * 2`
+  - `y = 4 + Math.sin(scrollProgress * Math.PI * 4) * 0.5`
+- Easing will use `power2.out` for smooth scrub transitions.
 
-### Project Setup
+## 3. Lighting & Atmosphere (`world.js` & `scene.js`)
+- **Fog**: Update to `new THREE.FogExp2(0x0a0a1f, 0.015)` (deep blue).
+- **Lights**:
+  - Global: Low `AmbientLight` (0.2) + Subtle `DirectionalLight` (0.5).
+  - Local: Strong cyan `PointLight` at Hero (`z=0`), magenta at Projects (`z=-24`), blue at Contact (`z=-48`).
 
-#### [NEW] package.json & Vite config
-- Initialize a Vite vanilla-JS project in the workspace directory
-- Install `three`, `gsap`, `postprocessing` (for bloom)
-- Configure Vite with the proper dev server
+## 4. UI Polish (`index.html` & `style.css`)
+- Update text content to match the narrative (Boot Sequence, Identity Scan, etc.).
+- Add typing animation to the Hero section.
+- Enhance glassmorphism with `backdrop-filter: blur(10px)` and cyan glowing borders.
 
-#### [NEW] index.html
-- Canvas element for Three.js
-- HTML overlay sections: Hero, About, Projects, Experience, Skills, Contact
-- Load `src/main.js` as a module
+## 5. Particle System Control (`particles.js`)
+- Maintain existing 3-layer sizes, but adjust depths to match the extended 50-unit world.
+- Add a specific attractor logic at `z=-48` (Contact Portal) to spiral particles inward if they pass near it.
 
----
-
-### Three.js Core (`src/`)
-
-#### [NEW] src/main.js
-- Entry point: initializes scene, attaches scroll, starts render loop
-
-#### [NEW] src/scene.js
-- `Scene`, `PerspectiveCamera`, `WebGLRenderer`
-- Cinematic gradient background (purple → deep blue → black) via shader or fog
-- Ambient + directional + point lights (cyan/magenta tones)
-- Neon grid floor using `GridHelper` + custom emissive material
-- Floating geometry decorations (torus, icosahedron, octahedron) with glow materials
-- Neon ring elements (TorusGeometry with emissive material)
-- `UnrealBloomPass` post-processing for glow
-
-#### [NEW] src/particles.js
-- Three particle systems: stars (far), dust (mid), data particles (near)
-- `BufferGeometry` + `PointsMaterial` with sprite textures
-- Idle animation in the render loop
-
-#### [NEW] src/scroll.js
-- GSAP `ScrollTrigger` tied to the HTML scroller
-- Animates camera position + rotation through the 3D scene as user scrolls
-- Triggers section fade-in/out transitions
-
----
-
-### Styling
-
-#### [NEW] src/style.css
-- Full-screen canvas behind a scroll container
-- Glassmorphism panels (`backdrop-filter: blur`, semi-transparent backgrounds)
-- Neon accent colors (cyan `#00f0ff`, magenta `#ff00ff`, purple `#a855f7`)
-- Smooth section transitions, glowing text/borders
-- Responsive layout
-- Google Font (Orbitron for headings, Inter for body)
-
----
-
-### Assets
-
-#### [NEW] public/textures/
-- Programmatically generated particle sprite (or a tiny glowing circle PNG)
-
----
-
-## Verification Plan
-
-### Browser Testing
-1. Run `npm run dev` in the project directory
-2. Open the Vite dev server URL in the browser
-3. Verify:
-   - WebGL canvas renders with gradient background and fog
-   - Neon grid floor is visible and glowing
-   - Particles animate in the background
-   - Scrolling moves the camera through the scene
-   - All 6 HTML sections (Hero → Contact) appear as glassmorphism cards
-   - Bloom/glow post-processing is active
-   - No console errors
+## Execution Steps
+1. Update `zones.js` coordinates to multiples of 12.
+2. Rewrite `world.js` Switch statement to build the exact Narrative sets (Network nodes with lines, Pillars, Orbiting cores).
+3. Update `scroll.js` with the lateral sinusoidal camera drift.
+4. Update `scene.js` and `world.js` lighting/fog.
+5. Update HTML/CSS for the UI narrative text and typing effects.
