@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { zones } from './zones.js';
+import { loadGuardian, loadReactor, loadDrone, loadPillars, loadPortal } from './models.js';
 
 const objects = [];
 
@@ -43,29 +44,7 @@ export function setupWorld(scene) {
     zones.forEach(zone => {
         // --- HERO ZONE ---
         if (zone.name === 'hero') {
-            // Core
-            const coreGeo = new THREE.IcosahedronGeometry(1.2, 0);
-            const core = new THREE.Mesh(coreGeo, materialCyanSolid);
-            core.position.set(0, 4, zone.z);
-            core.userData = { isHeroCore: true, time: 0 };
-            scene.add(core);
-            objects.push(core);
-
-            // Ring
-            const ringGeo = new THREE.TorusGeometry(3, 0.05, 16, 100);
-            const ring = new THREE.Mesh(ringGeo, materialCyan);
-            ring.position.set(0, 4, zone.z);
-            ring.rotation.x = Math.PI / 2;
-            ring.userData = { isHeroRing: true, time: 0 };
-            scene.add(ring);
-            objects.push(ring);
-
-            // Beam Down
-            const beamGeo = new THREE.CylinderGeometry(0.1, 0.1, 8, 8);
-            const beamMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
-            const beam = new THREE.Mesh(beamGeo, beamMat);
-            beam.position.set(0, 0, zone.z);
-            scene.add(beam);
+            // Geometric placeholders replaced by GLTF models configured at bottom of setupWorld
         }
 
         // --- ABOUT ZONE (Network Nodes) ---
@@ -118,25 +97,7 @@ export function setupWorld(scene) {
 
         // --- PROJECTS ZONE (Holographic Database Corridor) ---
         if (zone.name === 'projects') {
-            const pillarGeo = new THREE.CylinderGeometry(0.4, 0.4, 6, 16);
-            // Spawn 3 on left, 3 on right forming a corridor
-            const zOffsets = [-2, 0, 2];
-            for (let i = 0; i < 3; i++) {
-                // Left
-                const pLeft = new THREE.Mesh(pillarGeo, materialMagenta);
-                pLeft.position.set(-4, 0, zone.z + zOffsets[i] * 4);
-                scene.add(pLeft);
-
-                // Right
-                const pRight = new THREE.Mesh(pillarGeo, materialMagenta);
-                pRight.position.set(4, 0, zone.z + zOffsets[i] * 4);
-                scene.add(pRight);
-
-                // Add to objects to give them a slow rotation
-                pLeft.userData = { isPillar: true, rotY: 0.005 };
-                pRight.userData = { isPillar: true, rotY: -0.005 };
-                objects.push(pLeft, pRight);
-            }
+            // Geometric placeholders replaced by GLTF pillars configured at bottom of setupWorld
         }
 
         // --- SKILLS ZONE (Orbit System) ---
@@ -168,21 +129,7 @@ export function setupWorld(scene) {
 
         // --- CONTACT ZONE (Secure Portal) ---
         if (zone.name === 'contact') {
-            // Outer Ring
-            const outerGeo = new THREE.TorusGeometry(3, 0.2, 16, 100);
-            const outer = new THREE.Mesh(outerGeo, materialBlueEmissive);
-            outer.position.set(0, 4, zone.z);
-            outer.userData = { isPortalOuter: true };
-            scene.add(outer);
-            objects.push(outer);
-
-            // Inner Ring
-            const innerGeo = new THREE.TorusGeometry(2.5, 0.1, 16, 100);
-            const inner = new THREE.Mesh(innerGeo, materialCyan);
-            inner.position.set(0, 4, zone.z);
-            inner.userData = { isPortalInner: true };
-            scene.add(inner);
-            objects.push(inner);
+            // Geometric placeholders replaced by GLTF portal configured at bottom of setupWorld
         }
     });
 
@@ -231,31 +178,21 @@ export function setupWorld(scene) {
     // Shift floor center to match world depth
     neonFloor.position.z = -25;
     scene.add(neonFloor);
+
+    // Initialize Models
+    loadGuardian(scene, objects);
+    loadReactor(scene, objects);
+    loadDrone(scene, objects);
+    loadPillars(scene, objects);
+    loadPortal(scene, objects);
 }
 
 export function updateWorld() {
     objects.forEach((obj) => {
-        // Hero
-        if (obj.userData.isHeroCore) {
-            obj.userData.time += 0.01;
-            obj.position.y = 4 + Math.sin(obj.userData.time) * 0.2;
-            obj.rotation.y += 0.005;
-            obj.rotation.x += 0.002;
-        }
-        if (obj.userData.isHeroRing) {
-            obj.rotation.z += 0.002;
-            obj.position.y = 4 + Math.sin(obj.userData.time) * 0.2; // follow core
-        }
-
         // About / Generic floating
         if (obj.userData.isFloating) {
             obj.userData.time += obj.userData.floatSpeed;
             obj.position.y = obj.userData.initialY + Math.sin(obj.userData.time) * 0.4;
-        }
-
-        // Projects
-        if (obj.userData.isPillar) {
-            obj.rotation.y += obj.userData.rotY;
         }
 
         // Skills Orbiter
@@ -267,14 +204,18 @@ export function updateWorld() {
             obj.position.y = obj.userData.centerY + Math.sin(obj.userData.angle * 2) * 0.5;
         }
 
-        // Contact Portal
-        if (obj.userData.isPortalOuter) {
-            obj.rotation.z -= 0.005;
-            obj.rotation.y = Math.sin(Date.now() * 0.001) * 0.2; // slight wobble
+        // GLTF Models Animations
+        if (obj.userData.isDrone) {
+            obj.userData.time += 0.05; // Time accumulator for drone
+            obj.position.y = 2 + Math.sin(obj.userData.time) * 0.3;
         }
-        if (obj.userData.isPortalInner) {
-            obj.rotation.z += 0.02;
-            obj.rotation.y = Math.sin(Date.now() * 0.001) * 0.2;
+
+        if (obj.userData.isReactor) {
+            obj.rotation.y += 0.002;
+        }
+
+        if (obj.userData.isPortal) {
+            obj.rotation.z += 0.003;
         }
     });
 }
