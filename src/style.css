@@ -22,6 +22,15 @@ h3,
     font-family: 'Orbitron', sans-serif;
 }
 
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    padding: 0 2rem;
+    display: none;
+    /* Temporarily hidden for 3D scene debugging */
+}
+
 #webgl {
     position: fixed;
     top: 0;
